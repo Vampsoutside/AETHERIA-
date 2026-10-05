@@ -1,0 +1,338 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==================================================================
+   AETHERIA — Global Stylesheet
+   Cyber-Minimalism × Spatial Luxury. Dark by default, always.
+   ================================================================== */
+
+@layer base {
+  :root,
+  [data-palette='aether'] {
+    /* Electric Cyan / Deep Neon Purple — the default realm palette */
+    --accent: 0 240 255; /* #00F0FF */
+    --accent-2: 112 0 255; /* #7000FF */
+    --bg: 5 5 8; /* #050508 Obsidian Void */
+    --fg: 226 232 240;
+    --muted: 148 163 184;
+    --surface: 255 255 255;
+    color-scheme: dark;
+  }
+
+  /* Quest 1 reward — "Cyberpunk Neon" reskins the entire realm, 3D included. */
+  [data-palette='cyberpunk'] {
+    --accent: 255 43 130; /* #FF2B82 hot magenta */
+    --accent-2: 255 200 40; /* #FFC828 acid gold   */
+    --bg: 9 3 12;
+    --fg: 255 232 244;
+    --muted: 206 168 190;
+  }
+
+  * {
+    @apply border-glass-border;
+  }
+
+  html {
+    scroll-behavior: auto; /* Lenis owns scrolling */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  html,
+  body {
+    height: auto;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+
+  body {
+    @apply bg-void-900 text-slate-200 antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+    background-color: rgb(var(--bg));
+    text-rendering: optimizeLegibility;
+  }
+
+  /* The WebGL canvas is a fixed backdrop; content scrolls above it. */
+  #__next,
+  main {
+    position: relative;
+  }
+
+  ::selection {
+    background: rgb(var(--accent) / 0.28);
+    color: #fff;
+    text-shadow: 0 0 18px rgb(var(--accent) / 0.8);
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: rgb(255 255 255 / 0.02);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgb(var(--accent) / 0.45), rgb(var(--accent-2) / 0.45));
+    border-radius: 99px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, rgb(var(--accent) / 0.8), rgb(var(--accent-2) / 0.8));
+    background-clip: padding-box;
+  }
+
+  :focus-visible {
+    outline: 1px solid rgb(var(--accent) / 0.85);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display font-extrabold tracking-tight text-white;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Native cursor is replaced by the magnetic multi-layer cursor on fine pointers. */
+  @media (pointer: fine) {
+    body.has-custom-cursor,
+    body.has-custom-cursor a,
+    body.has-custom-cursor button,
+    body.has-custom-cursor [role='button'],
+    body.has-custom-cursor input,
+    body.has-custom-cursor textarea {
+      cursor: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ==================================================================
+   Lenis — smooth scroll (required companion styles)
+   ================================================================== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* ==================================================================
+   Components — the glassmorphic HUD kit
+   ================================================================== */
+@layer components {
+  .glass {
+    @apply border border-glass-border bg-glass backdrop-blur-hud;
+    background-image: linear-gradient(
+      160deg,
+      rgba(255, 255, 255, 0.06) 0%,
+      rgba(255, 255, 255, 0.015) 42%,
+      rgba(255, 255, 255, 0.03) 100%
+    );
+    box-shadow:
+      0 20px 60px -30px rgba(0, 0, 0, 0.95),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
+  }
+
+  .glass-strong {
+    @apply border border-white/15 bg-black/45 backdrop-blur-xl;
+    box-shadow:
+      0 32px 90px -40px rgba(0, 0, 0, 1),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
+  }
+
+  /* Thin emissive hairline that traces the top edge of a panel */
+  .edge-light::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgb(var(--accent) / 0.75) 22%,
+      rgb(var(--accent-2) / 0.6) 58%,
+      transparent
+    );
+    opacity: 0.85;
+  }
+
+  /* Corner brackets — the signature AETHERIA HUD frame */
+  .hud-frame {
+    position: relative;
+  }
+  .hud-frame::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    pointer-events: none;
+    background:
+      linear-gradient(rgb(var(--accent) / 0.9), rgb(var(--accent) / 0.9)) left top / 14px 1px no-repeat,
+      linear-gradient(rgb(var(--accent) / 0.9), rgb(var(--accent) / 0.9)) left top / 1px 14px no-repeat,
+      linear-gradient(rgb(var(--accent) / 0.9), rgb(var(--accent) / 0.9)) right bottom / 14px 1px no-repeat,
+      linear-gradient(rgb(var(--accent) / 0.9), rgb(var(--accent) / 0.9)) right bottom / 1px 14px no-repeat;
+    opacity: 0.5;
+    transition: opacity 0.4s ease;
+  }
+  .hud-frame:hover::after {
+    opacity: 1;
+  }
+
+  .hud-label {
+    @apply font-mono text-hud uppercase text-slate-400;
+  }
+
+  .text-glow {
+    text-shadow:
+      0 0 12px rgb(var(--accent) / 0.55),
+      0 0 44px rgb(var(--accent) / 0.28);
+  }
+
+  .text-glow-2 {
+    text-shadow:
+      0 0 12px rgb(var(--accent-2) / 0.6),
+      0 0 48px rgb(var(--accent-2) / 0.3);
+  }
+
+  /* Faceted shard clip used on cards and CTAs */
+  .clip-shard {
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+  }
+  .clip-tag {
+    clip-path: polygon(0 0, 100% 0, calc(100% - 8px) 100%, 0 100%);
+  }
+
+  /* Animated conic sheen behind primary CTAs */
+  .sheen {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .sheen::after {
+    content: '';
+    position: absolute;
+    inset: -60%;
+    z-index: -1;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0deg,
+      rgb(var(--accent) / 0.32) 40deg,
+      transparent 90deg,
+      transparent 270deg,
+      rgb(var(--accent-2) / 0.28) 320deg,
+      transparent 360deg
+    );
+    animation: spin-slow 9s linear infinite;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .sheen:hover::after {
+    opacity: 1;
+  }
+
+  .grid-floor {
+    background-image:
+      linear-gradient(rgb(var(--accent) / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--accent) / 0.07) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, #000 20%, transparent 78%);
+  }
+
+  .noise-veil {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+  }
+
+  /* Section reveal driven by GSAP ScrollTrigger (.is-in toggled in JS) */
+  .reveal {
+    opacity: 0;
+    transform: translate3d(0, 34px, 0);
+    filter: blur(9px);
+    transition:
+      opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1.1s cubic-bezier(0.16, 1, 0.3, 1),
+      filter 1s ease;
+  }
+  .reveal.is-in {
+    opacity: 1;
+    transform: none;
+    filter: blur(0);
+  }
+
+  .stagger > * {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
+  }
+  .stagger.is-in > * {
+    animation: rise-in 0.85s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .stagger.is-in > *:nth-child(1) { animation-delay: 0.04s; }
+  .stagger.is-in > *:nth-child(2) { animation-delay: 0.12s; }
+  .stagger.is-in > *:nth-child(3) { animation-delay: 0.2s; }
+  .stagger.is-in > *:nth-child(4) { animation-delay: 0.28s; }
+  .stagger.is-in > *:nth-child(5) { animation-delay: 0.36s; }
+  .stagger.is-in > *:nth-child(6) { animation-delay: 0.44s; }
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0);
+      filter: blur(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+      filter: blur(0);
+    }
+  }
+
+  /* Data-readout flicker for telemetry digits */
+  .readout {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+  }
+}
+
+@layer utilities {
+  .writing-vertical {
+    writing-mode: vertical-rl;
+  }
+  .no-tap-highlight {
+    -webkit-tap-highlight-color: transparent;
+  }
+  .perspective-1200 {
+    perspective: 1200px;
+  }
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, #000 55%, transparent 100%);
+  }
+  .mask-fade-x {
+    mask-image: linear-gradient(to right, transparent, #000 12%, #000 88%, transparent);
+  }
+}
