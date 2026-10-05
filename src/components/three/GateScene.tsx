@@ -14,10 +14,9 @@ import { palette } from '@/lib/tokens';
 import { QUEST_MAP } from '@/lib/quests';
 import { useQuestStore } from '@/lib/store/useQuestStore';
 import { useUIStore } from '@/lib/store/useUIStore';
-import { selectQuality, useGraphicsStore } from '@/lib/store/useGraphicsStore';
-import { useShallow } from 'zustand/react/shallow';
 import { audio } from '@/lib/audio/engine';
 import { clamp, seededRandom } from '@/lib/utils';
+import { useQuality } from '@/hooks/useQuality';
 
 /* ------------------------------------------------------------------ *
  * Particle field — stars / dust, animated entirely on the GPU.
@@ -436,18 +435,9 @@ function SceneContents() {
   );
 }
 
-/**
- * `selectQuality` builds a fresh object on every call. Zustand v5 has no
- * default shallow-equality, so subscribing to it directly hands
- * useSyncExternalStore a new snapshot each render and loops forever
- * ("getSnapshot should be cached" / "Maximum update depth exceeded").
- * `useShallow` compares the fields one level deep and keeps identity stable.
- */
-function useQuality() {
-  return useGraphicsStore(useShallow(selectQuality));
-}
-
-/** The fixed WebGL backdrop for the Gate of Origin. */
+/* ------------------------------------------------------------------ *
+ * Scene root
+ * ------------------------------------------------------------------ */
 export function GateScene() {
   const quality = useQuality();
 

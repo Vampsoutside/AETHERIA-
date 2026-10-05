@@ -9,19 +9,33 @@ import { cn } from '@/lib/utils';
  * slider in AETHERIA is an instrument, not a preference — the Explorer needs
  * to see the exact value (Quest 2 requires hitting precisely 432 Hz).
  */
-export interface SliderProps extends React.ComponentPropsWithoutRef<typeof SliderPrimitive.Root> {
+export interface SliderProps {
   label?: string;
   unit?: string;
+  value?: number[];
+  defaultValue?: number[];
+  min?: number;
+  max?: number;
+  step?: number;
+  disabled?: boolean;
+  inverted?: boolean;
   /** Highlight the track when the value enters this window */
   resonanceAt?: number;
   resonanceTolerance?: number;
   format?: (v: number) => string;
+  onChange: (value: number[]) => void;
+  className?: string;
+  'aria-label'?: string;
 }
 
 export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.Root>, SliderProps>(
-  ({ className, label, unit, value, resonanceAt, resonanceTolerance = 1.5, format, ...props }, ref) => {
+  ({ className, label, unit, value, resonanceAt, resonanceTolerance = 1.5, format, onChange, ...props }, ref) => {
     const current = Array.isArray(value) ? (value[0] ?? 0) : 0;
     const resonant = resonanceAt !== undefined && Math.abs(current - resonanceAt) <= resonanceTolerance;
+
+    const handleChange = (val: number[]) => {
+      onChange(val);
+    };
 
     return (
       <div className={cn('w-full', className)}>
@@ -44,6 +58,7 @@ export const Slider = React.forwardRef<React.ElementRef<typeof SliderPrimitive.R
         <SliderPrimitive.Root
           ref={ref}
           value={Array.isArray(value) ? value : [current]}
+          onValueChange={handleChange}
           className={cn('relative flex w-full touch-none select-none items-center py-2.5', className)}
           {...props}
         >
